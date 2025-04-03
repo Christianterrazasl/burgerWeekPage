@@ -22,7 +22,8 @@ const Hamburguesa = sequelize.define('Hamburguesa', {
     },
     imagenUrl:{
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: true,
+        defaultValue: '/uploads/defaultBurger.jpg' // Imagen por defecto
     },
     idRestaurante:{
         type: DataTypes.INTEGER,

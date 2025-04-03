@@ -14,7 +14,8 @@ const Restaurant = sequelize.define('Restaurant', {
     },
     logoUrl:{
         type: DataTypes.STRING,
-        allowNull: true
+        allowNull: true,
+        defaultValue: '/uploads/defaultLogo.jpg' // Imagen por defecto
     }  
     },
     {
