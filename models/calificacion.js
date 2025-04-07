@@ -15,7 +15,8 @@ const Calificacion = sequelize.define('Calificacion', {
     idHamburguesa:{
         type:DataTypes.INTEGER,
         allowNull:false
-    }
+    },
+    
 
 },{timestamps:false});
 

@@ -1,0 +1,24 @@
+<%- include('../components/header') %>
+    <div class="container p-3">
+        <h1 class="mb-3"><%= restaurant ? 'Editar restaurant' : 'Agregar restaurant' %></h1>
+
+        <form action="<%= restaurant ? "/api/restaurant/"+restaurant.id+'/edit' :"/api/restaurant" %>" method="POST" class="p-4 bg-light rounded shadow" enctype="multipart/form-data">
+            <div class="mb-3">
+              <label for="nombre" class="form-label">Nombre</label>
+              <input type="text" class="form-control" id="nombre" name="nombre" value="<%= restaurant? restaurant.nombre: '' %>" required>
+            </div>
+            <div class="mb-3">
+                <label for="logo" class="form-label">Logo</label>
+                <input type="file" class="form-control" id="logo" name="logo">
+                <% if (restaurant && restaurant.logoUrl) { %>
+                    <img src="<%= restaurant.logoUrl %>" alt="Logo de <%= restaurant.nombre %>" class="img-fluid mt-2" style="max-width: 100px; max-height: 100px;">
+                <% } %>
+              </div>
+          
+            <button type="submit" class="btn btn-primary">Enviar</button>
+            <a href="/admin" class="btn btn-secondary">Cancelar</a>
+
+        </form>
+        
+    </div>
+<%- include('../components/footer') %>

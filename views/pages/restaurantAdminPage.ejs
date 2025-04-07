@@ -1,0 +1,38 @@
+<%- include('../components/header.ejs') %>
+<div class="container p-3">
+    <h1 class="fw-bold">Pagina de administrador - Restaurantes</h1>
+    <div class="row">
+        <div class="col-1 ms-auto mb-3">
+            <a href="/admin/form"><button class="btn btn-danger">Agregar restaurante</button></a>
+        </div>
+        <div class="row">
+            <h1 class="fw-bold">Todos los restaurants</h1>
+        </div>
+        <div class="row bg-danger mb-5" style="height: 5px;"></div>
+        <div class="p-4 bg-danger rounded shadow row row-gap-3">
+            <% if (restaurants && restaurants.length > 0) { %>
+                <% restaurants.forEach(r => { %>
+                    <div class="bg-light rounded shadow d-flex flex-row justify-content-between align-items-center p-4">
+                        <h4><%= r.nombre %></h4>
+                        <div class="d-flex flex-row gap-3 align-items-center">
+                            <form action="/admin/hamburguesa/<%= r.id %>" method="get">
+                                <button type="submit" class="btn btn-primary">Ver Restaurant</button>
+                            </form>
+                            <form action="/admin/form/<%= r.id %>" method="get">
+                                <button type="submit" class="btn btn-danger">Editar</button>
+                            </form>
+                            <form action="/api/restaurant/<%= r.id %>/delete" method="post">
+                                <button type="submit" class="btn btn-dark">Eliminar</button>
+                            </form>
+                            <img src="<%= r.logoUrl ? r.logoUrl : '/uploads/defaultLogo.jpg' %>" alt="Logo de <%= r.nombre %>" class="img-fluid rounded" style="max-width: 100px; max-height: 100px;">
+                        </div>
+                        
+                    </div>
+                <% }) %>
+            <% } else { %>
+                <div>No hay restaurantes disponibles</div>
+            <% } %>
+        </div>
+    </div>
+</div>
+<%- include('../components/footer.ejs') %>

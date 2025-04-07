@@ -1,16 +1,12 @@
-const {Restaurant} = require('../models');
-const upload = require('../config/upload');
+const {Restaurant} = require('../models/index.js');
 
-
-
-module.exports= (app, db)=>{
-
-    app.post('api/restaurant', upload.single('logo'), async (req, res)=>{
+    exports.postRestaurant = async (req, res)=>{
         try{
             const {nombre} = req.body;
-            const logoUrl = req.file? '/uploads/'+req.file.filename : null;
-            const newRestaurant =await Restaurant.create({nombre, logoUrl});
-            res.status(201).json(newRestaurant);
+            const logoUrl = req.file? '/uploads/'+req.file.filename : '/uploads/defaultLogo.jpg';
+            await Restaurant.create({nombre, logoUrl});
+            res.redirect('/admin');
+            
         }catch(error){
             console.error("Error al crear el restaurante: ", error)
         }
@@ -23,5 +19,105 @@ module.exports= (app, db)=>{
                 <button type="submit">Crear Restaurante</button>
             </form>
         */ 
-    })
-}
+    }
+
+    exports.getRestaurantsPage = async(req,res)=>{
+        try{
+            const restaurants = await Restaurant.findAll({raw:true});
+            res.render('pages/restaurantsPage', {restaurants});
+        }
+        catch(err){
+            console.error("Error al obtener restaurantes: ",err);
+        }
+        
+    }
+
+    exports.updateRestaurant = async (req, res)=>{
+        try {
+            const { id } = req.params;
+            const { nombre } = req.body;
+            const logoUrl = req.file ? '/uploads/' + req.file.filename : '/uploads/defaultLogo.jpg';
+
+            // Actualizar el restaurante en la base de datos
+            const updatedRestaurant = await Restaurant.update(
+                { nombre, logoUrl },
+                { where: { id } }
+            );
+
+            if (updatedRestaurant[0] === 0) {
+                return res.status(404).json({ message: 'Restaurante no encontrado' });
+            }
+
+            res.redirect('/admin');
+            
+        } catch (error) {
+            console.error("Error al actualizar el restaurante: ", error);
+            
+        }
+    }
+
+    exports.deleteRestaurant = async (req, res)=>{
+        try {
+            const { id } = req.params;
+
+            // Eliminar el restaurante de la base de datos
+            const deletedRestaurant = await Restaurant.destroy({ where: { id } });
+
+            if (deletedRestaurant === 0) {
+                return res.status(404).json({ message: 'Restaurante no encontrado' });
+            }
+
+            res.redirect('/admin');
+            
+        } catch (error) {
+            console.error("Error al eliminar el restaurante: ", error);
+            
+        }
+    }
+
+    exports.getRestaurantById = async (req, res)=>{
+        try {
+            const { id } = req.params;
+
+            // Obtener el restaurante por ID
+            const restaurant = await Restaurant.findOne({ where: { id } });
+
+            if (!restaurant) {
+                return res.status(404).json({ message: 'Restaurante no encontrado' });
+            }
+
+            res.status(200).json(restaurant);
+            
+        } catch (error) {
+            console.error("Error al obtener el restaurante: ", error);
+            
+        }
+    }
+
+
+    exports.getRestaurantAdminPage = async (req, res) => {
+        try{
+            const restaurants = await Restaurant.findAll({raw:true});
+            res.render('pages/restaurantAdminPage', {restaurants});
+        }
+        catch(err){
+            console.error("Error al obtener restaurantes: ",err);
+        }
+    }
+
+    exports.getRestaurantFormPage = async (req, res) => {
+        try {
+            const { id } = req.params;
+            if(id){
+                const restaurant = await Restaurant.findOne({ where: { id } });
+                if (!restaurant) {
+                    return res.status(404).send('Restaurante no encontrado');
+                }
+                res.render('pages/restaurantFormPage', { restaurant });
+            }else{
+                res.render('pages/restaurantFormPage', { restaurant: null });
+            }
+        } catch (error) {
+            console.error("Error al obtener el formulario del restaurante: ", error);
+        }
+    }
