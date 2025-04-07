@@ -19,6 +19,7 @@ router.get('/admin/hamburguesa/form/:idRestaurant/:id', hamburguesaController.ge
 //user pages
 router.get('/main-page', restaurantController.getRestaurantsPage);
 router.get('/restaurant-page/:idRestaurant', hamburguesaController.getHamburguesasPage);
+router.get('/restaurant-page/:idRestaurant/:idHamburguesa', hamburguesaController.getSingleHamburguesaPage);
 
 //endpoint restaurant
 router.post('/api/restaurant', upload.single('logo'), restaurantController.postRestaurant);

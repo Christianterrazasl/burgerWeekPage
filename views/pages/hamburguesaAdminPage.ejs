@@ -8,27 +8,34 @@
         </div>
     </div>
     <div class="row gap-4 justify-content-center p-3">
+      <% if (hamburguesas.length > 0) { %>
         <% hamburguesas.forEach(h => { %>
-            <div class="card col-3 rounded shadow p-2 pt-4">
-                <img class="card-img-top" src="<%= h.imagenUrl %>" alt="Imagen de hamburguesa <%= h.nombre %>">
-                <div class="card-body">
-                  <h5 class="card-title"><%= h.nombre %></h5>
-                  <p class="card-text"><%= h.descripcion %></p>
-                  <p class="card-text">Precio: <%= h.precio %> Bs.</p>
-                  <p class="card-text mb-4">Calificacion: </p>
+          <div class="card col-3 rounded shadow p-2 pt-4">
+              <img class="card-img-top" src="<%= h.imagenUrl %>" alt="Imagen de hamburguesa <%= h.nombre %>">
+              <div class="card-body">
+                <h5 class="card-title"><%= h.nombre %></h5>
+                <p class="card-text"><%= h.descripcion %></p>
+                <p class="card-text">Precio: <%= h.precio %> Bs.</p>
+                <p class="card-text mb-4">Calificacion promedio: <%= h.dataValues.promedioCalificacion %> estrellas</p>
 
-                  <div class="d-flex flex-row justify-content-start align-items-center gap-3">
-                    <form action="/api/hamburguesa/<%= restaurant.id %>/<%= h.id %>/delete" method="post">
-                        <button class="btn btn-dark">Eliminar</button>
-                      </form>
-                      <form action='/admin/hamburguesa/form/<%= restaurant.id %>/<%= h.id %>' method="get">
-                        <button class="btn btn-primary">Editar</button>
-                      </form>
-                  </div>
-                  
+                <div class="d-flex flex-row justify-content-start align-items-center gap-3">
+                  <form action="/api/hamburguesa/<%= restaurant.id %>/<%= h.id %>/delete" method="post">
+                      <button class="btn btn-dark">Eliminar</button>
+                    </form>
+                    <form action='/admin/hamburguesa/form/<%= restaurant.id %>/<%= h.id %>' method="get">
+                      <button class="btn btn-primary">Editar</button>
+                    </form>
                 </div>
+                
               </div>
-        <% }) %>
+            </div>
+      <% }) %>
+      <% }else{ %>
+        <div class="col-6 text-center d-flex justify-content-center align-items-center "  style="height: 80vh;">
+            <h1>No hay hamburguesas registradas aqui</h1>
+        </div>
+      <% } %>
+        
     </div>
 </div>
 <%- include('../components/footer.ejs') %>

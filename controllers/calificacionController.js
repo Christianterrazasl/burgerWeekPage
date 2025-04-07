@@ -19,12 +19,12 @@ exports.postCalificacion = async (req, res) => {
         const { rate } = req.body;
 
         // Crear la calificación
-        const newCalificacion = await Calificacion.create({
+        await Calificacion.create({
             rate,
             idHamburguesa
         });
 
-        res.redirect('/pages/successfulReview');
+        res.redirect('/main-page');
     } catch (error) {
         console.error('Error al crear calificación:', error);
         res.status(500).send('Error al crear calificación');

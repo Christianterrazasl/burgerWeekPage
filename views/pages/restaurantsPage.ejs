@@ -11,7 +11,7 @@
                 <div class="card bg-light rounded shadow d-flex flex-column justify-content-between align-items-center p-4">
                     <img src="<%= r.logoUrl ? r.logoUrl : '/uploads/defaultLogo.jpg' %>" alt="Logo de <%= r.nombre %>" class="img-fluid rounded mb-3 shadow" style="width: 100%; height: 100%;">
                     <h4 class="mb-3"><%= r.nombre %></h4>
-                    <form action="/admin/hamburguesa/<%= r.id %>" method="get">
+                    <form action="/restaurant-page/<%= r.id %>" method="get">
                         <button type="submit" class="btn btn-danger">Ver Restaurant</button>
                     </form>
                 </div>

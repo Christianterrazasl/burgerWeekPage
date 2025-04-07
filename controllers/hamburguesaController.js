@@ -1,13 +1,14 @@
 
-const {Hamburguesa, Restaurant} = require('../models/index.js');
+const {Hamburguesa, Restaurant, Calificacion} = require('../models/index.js');
 
 exports.getHamburguesasPage = async (req, res) => {
     try {
         const {idRestaurant} = req.params
+        const restaurant = await Restaurant.findOne({ where: { id: idRestaurant } });
         const hamburguesas = await Hamburguesa.findAll({
             where: { idRestaurant }
         });
-        res.render('pages/hamburguesasPage', { hamburguesas });
+        res.render('pages/hamburguesasPage', { hamburguesas, restaurant });
     } catch (error) {
         console.error('Error al obtener hamburguesas:', error);
         res.status(500).send('Error al obtener la pagina de hamburguesas');
@@ -78,10 +79,29 @@ exports.getHamburguesasAdminPage = async (req, res) => {
     try {
         const { idRestaurant } = req.params;
         const restaurant = await Restaurant.findOne({ where: { id: idRestaurant } });
-        const hamburguesas = await Hamburguesa.findAll({ where: { idRestaurant } });
         if (!restaurant) {
             return res.status(404).send('Restaurante no encontrado');
         }
+        const hamburguesas = await Hamburguesa.findAll({ 
+            where: { idRestaurant },
+            include: [{
+                model: Calificacion,
+                attributes: ['rate']
+            }]
+        });
+        if (hamburguesas.length === 0) {
+            return res.render('pages/hamburguesaAdminPage', { restaurant, hamburguesas: [] })
+        }
+
+        // Calcular el promedio de calificaciones para cada hamburguesa
+        hamburguesas.forEach(hamburguesa => {
+            const calificaciones = hamburguesa.Calificacions.map(c => c.rate);
+            hamburguesa.dataValues.promedioCalificacion = calificaciones.length
+                ? calificaciones.reduce((a, b) => a + b, 0) / calificaciones.length
+                : 0;
+        });
+        console.log(hamburguesas);
+        
         res.render('pages/hamburguesaAdminPage', { restaurant, hamburguesas });
     } catch (error) {
         console.error('Error al obtener la pagina del formulario de hamburguesa:', error);
@@ -146,6 +166,20 @@ exports.getAllHamburguesas = async (req, res) => {
     } catch (error) {
         console.error('Error al obtener hamburguesas:', error);
         res.status(500).send('Error al obtener hamburguesas');
+    }
+}
+
+exports.getSingleHamburguesaPage = async (req, res) => {
+    const {idRestaurant, idHamburguesa} = req.params;
+    try {
+        const hamburguesa = await Hamburguesa.findOne({ where: { id: idHamburguesa } });
+        if (!hamburguesa) {
+            return res.status(404).send('Hamburguesa no encontrada');
+        }
+        res.render('pages/singleHamburguesa', { hamburguesa });
+    } catch (error) {
+        console.error('Error al obtener la hamburguesa:', error);
+        res.status(500).send('Error al obtener la hamburguesa');
     }
 }
 

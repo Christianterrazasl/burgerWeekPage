@@ -1,0 +1,35 @@
+<%- include('../components/header.ejs') %>
+<div class="container py-5">
+    <div class="row text-center mb-3">
+        <h1><%= hamburguesa.nombre %></h1>
+    </div>
+    <div class="row bg-danger rounded mb-3" style="height: 10px;"></div>
+    <div class="row">
+        <div class="col-6 bg-dark rounded-5 card p-3">
+                <img src="<%= hamburguesa.imagenUrl %>" alt="Imagen de <%= hamburguesa.nombre %>" class="img-fluid rounded-5 " style="width: 100%; height: 100%;">
+        </div>
+        <div class="col-5 offset-1 p-3 bg-danger text-light d-flex justify-content-center align-items-center flex-column gap-3  border border-2 border-danger rounded-5">
+            <h1 class="text-center"><%= hamburguesa.descripcion %></h1>
+            <h2 class="text-center">Precio: $<%= hamburguesa.precio %> Bs.</h2>
+        </div>
+        <div class="row text-center mt-5 p-5">
+            <h2>¿Ya la probaste? ¡Dale una calificación!</h2>
+        </div>
+        <div class="row text-center">
+            <form action="/api/calificacion/<%= hamburguesa.id %>" method="POST" class="d-flex flex-column align-items-center gap-3">
+                
+                <select name="rate" class="form-select w-25" required>
+                    <option value="" disabled selected>Elige una opción</option>
+                    <option value=1>1 estrella</option>
+                    <option value=2>2 estrellas</option>
+                    <option value=3>3 estrellas</option>
+                    <option value=4>4 estrellas</option>
+                    <option value=5>5 estrellas</option>
+                </select>
+                <button type="submit" class="btn btn-danger mt-3">Enviar Calificación</button>
+            </form>
+        </div>
+    </div>
+
+</div>
+<%- include('../components/footer.ejs') %>
