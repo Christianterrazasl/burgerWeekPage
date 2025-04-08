@@ -41,7 +41,13 @@ exports.deleteHamburguesa = async (req, res) => {
         const { idHamburguesa } = req.params;
         const { idRestaurant } = req.params;
 
+        const hamburguesa = await Hamburguesa.findOne({ where: { id: idHamburguesa } });
+        if (!hamburguesa) {
+            return res.status(404).json({ message: 'Hamburguesa no encontrada' });
+        }
+
         // Eliminar la hamburguesa de la base de datos
+        await Calificacion.destroy({ where: { idHamburguesa } });
         const deletedHamburguesa = await Hamburguesa.destroy({ where: { id: idHamburguesa  } });
 
         if (deletedHamburguesa === 0) {
@@ -97,10 +103,10 @@ exports.getHamburguesasAdminPage = async (req, res) => {
         hamburguesas.forEach(hamburguesa => {
             const calificaciones = hamburguesa.Calificacions.map(c => c.rate);
             hamburguesa.dataValues.promedioCalificacion = calificaciones.length
-                ? calificaciones.reduce((a, b) => a + b, 0) / calificaciones.length
+                ? (calificaciones.reduce((a, b) => a + b, 0) / calificaciones.length).toFixed(2)
                 : 0;
         });
-        console.log(hamburguesas);
+        
         
         res.render('pages/hamburguesaAdminPage', { restaurant, hamburguesas });
     } catch (error) {

@@ -1,4 +1,4 @@
-const {Restaurant} = require('../models/index.js');
+const {Restaurant, Hamburguesa, Calificacion} = require('../models/index.js');
 
     exports.postRestaurant = async (req, res)=>{
         try{
@@ -60,12 +60,20 @@ const {Restaurant} = require('../models/index.js');
         try {
             const { id } = req.params;
 
-            // Eliminar el restaurante de la base de datos
-            const deletedRestaurant = await Restaurant.destroy({ where: { id } });
-
-            if (deletedRestaurant === 0) {
+            const restaurant = await Restaurant.findOne({ where: { id } });
+            if (!restaurant) {
                 return res.status(404).json({ message: 'Restaurante no encontrado' });
             }
+
+            const hamburguesas = await Hamburguesa.findAll({ where: { idRestaurant: id } });
+            hamburguesas.forEach(async (hamburguesa) => {
+                await Calificacion.destroy({ where: { idHamburguesa: hamburguesa.id } });
+            });
+
+            await Hamburguesa.destroy({ where: { idRestaurant: id } });
+            await Restaurant.destroy({ where: { id } });
+
+            
 
             res.redirect('/admin');
             
